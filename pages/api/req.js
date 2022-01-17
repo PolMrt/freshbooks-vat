@@ -1,9 +1,10 @@
-import { getSession } from 'next-auth/client'
-import jwt from 'next-auth/jwt'
+import { getSession } from 'next-auth/react'
+import { getToken } from 'next-auth/jwt'
 
 export default async function helloAPI(req, res) {
   try {
-    const userData = await jwt.getToken({ req, secret: process.env.JWT_SECRET })
+    const userData = await getToken({ req, secret: process.env.JWT_SECRET })
+    console.log(userData)
 
     if (!userData.accessToken) {
       return res.status(401).json({ error: 'You are not logged in', logout: 1 })

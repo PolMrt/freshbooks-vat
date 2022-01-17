@@ -1,4 +1,5 @@
 import NextAuth from 'next-auth'
+// import FreshbooksProvider from "../../../lib/freshbooksProvider";
 import FreshbooksProvider from '../../../lib/freshbooksProvider'
 
 export default NextAuth({
@@ -6,29 +7,30 @@ export default NextAuth({
   providers: [
     FreshbooksProvider({
       clientId: process.env.FRESHBOOKS_CLIENT_ID,
-      clientSecret: process.env.FRESHBOOKS_CLIENT_SECRET,
-      redirectUri: 'https://localhost:3000/api/auth/callback/freshbooks'
+      clientSecret: process.env.FRESHBOOKS_CLIENT_SECRET
     })
-    // ...add more providers here
   ],
 
+  secret: 'EiNinH413dCfpnwOQxBnfGS6tZGet5ho96dEflYwkf4=',
+
   callbacks: {
-    async signIn(user, account, profile) {
+    async signIn({ user, account, profile, email, credentials }) {
       // console.log(user, account, profile)
       // const newToken = await refreshToken({ refreshToken: account.refreshToken })
       return true
     },
-    async redirect(url, baseUrl) {
+    async redirect({ url, baseUrl }) {
       return baseUrl
     },
-    async session(session, user) {
+    async session({ session, token, user }) {
       //console.log('hey', session, user)
       return session
     },
-    async jwt(token, user, account, profile, isNewUser) {
+    async jwt({ token, user, account, profile, isNewUser }) {
       //console.log('maybe', token, user, account, profile, isNewUser)
+      console.log(account)
       if (account?.provider === 'freshbooks') {
-        token.accessToken = account.accessToken
+        token.accessToken = account.access_token
       }
       return token
     }
